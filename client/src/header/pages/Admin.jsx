@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 
-let url = "http://localhost:4100";
+let url = "https://crud-application-k1lr.vercel.app";
 
 const Admin = () => {
   const [data, setData] = useState([]);
