@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+nav div {
+  width: 10rem;
+  display: flex;
+  margin: auto;
+  justify-content: space-between;
+}
+nav div a {
+  text-decoration: none;
+  font-size: 1.3rem;
+}
+
+.navparent {
+  width: 70vw;
+  margin: auto;
+}/*# sourceMappingURL=globle.css.map */
