@@ -33,7 +33,7 @@ const Admin = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post(url);
+        const response = await axios.get(`${url}/users`);
         setData(response.data);
       } catch (error) {
         throw error;

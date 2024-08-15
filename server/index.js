@@ -8,7 +8,8 @@ let PORT = 4100;
 app.use(express.json());
 app.use(cors());
 app.get('/',(req,res)=> {
-  res.send('hello world')
+  console.log('data connected')
+  res.send('shri ganesh')
 })
 //get user details in admin panel
 app.get('/users', async (req, res) => {
@@ -135,9 +136,7 @@ app.get('/userdata/:id',async (req,res)=> {
   try{
     let result = await bcdata.find({_id:req.params.id})
     res.json(result)
-    console.log(result)
   }catch(err){
-    console.log(err)
   }
 })
 

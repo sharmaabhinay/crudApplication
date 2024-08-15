@@ -40,7 +40,7 @@ const About = () => {
       notify("invailid email");
     } else {
       try {
-        let res = await axios.post(`${url}/user`, data);
+        let res = await axios.post(`${url}/register-user`, data);
         if (res.data == "submited") {
           userData.name.value == '';
           notify("Data submited");
