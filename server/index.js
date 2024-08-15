@@ -2,8 +2,6 @@ const bcdata = require('./config');
 const express = require('express');
 const app = express();
 const cors = require('cors');
-// require('dotenv').config()
-// let PORT = process.env.PORT || 4100
 let PORT = 4100;
 
 
@@ -13,7 +11,7 @@ app.get('/',(req,res)=> {
   res.send('hello world')
 })
 //get user details in admin panel
-app.post('/', async (req, res) => {
+app.get('/users', async (req, res) => {
   try {
     let data = await bcdata.find();
     // console.log('>>>>>>>>>', data);
@@ -24,7 +22,7 @@ app.post('/', async (req, res) => {
   }
 });
 //new user register
-app.post('/user', async (req, res) => {
+app.post('/register-user', async (req, res) => {
   console.log(req.body)
   const { username, email, phone, city , gender,dob,qualification} = req.body;
   const data = {
@@ -110,11 +108,9 @@ app.post('/qualificationfilter',async(req,res)=> {
     throw err
   }
 })
-//seach
 app.post('/search',async(req,res)=> {
   const searchTerm = req.body.data;
 
-  // Convert searchTerm to number if applicable
   let searchQuery = { "$regex": new RegExp(searchTerm, 'i') };
   let phoneQuery = isNaN(searchTerm) ? null : Number(searchTerm);
 
@@ -144,8 +140,5 @@ app.get('/userdata/:id',async (req,res)=> {
     console.log(err)
   }
 })
-let d = new Date();
 
-app.listen(PORT, () => {
-  console.log('server is running on port 4100',d.getMinutes(),d.getSeconds());
-});
+app.listen(PORT);
