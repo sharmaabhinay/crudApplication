@@ -109,27 +109,27 @@ app.post('/qualificationfilter',async(req,res)=> {
     throw err
   }
 })
-app.post('/search',async(req,res)=> {
+app.post('/search', async (req, res) => {
   const searchTerm = req.body.data;
-
-  let searchQuery = { "$regex": new RegExp(searchTerm, 'i') };
-  let phoneQuery = isNaN(searchTerm) ? null : Number(searchTerm);
 
   try {
     let result = await bcdata.find({
       "$or": [
-        { name: searchQuery },
-        { city: searchQuery },
-        { phone: phoneQuery },
-        { email: searchQuery }
+        { name: { "$regex": `^${searchTerm}$`, "$options": "i" } },
+        { city: { "$regex": `^${searchTerm}$`, "$options": "i" } },
+        { email: { "$regex": `^${searchTerm}$`, "$options": "i" } }
       ]
     });
+
     res.send(result);
     console.log(result);
-  } catch(err){
-    console.log(err)
+  } catch (err) {
+    console.log(err);
+    res.status(500).send('An error occurred while searching.');
   }
-})
+});
+
+
 
 app.get('/userdata/:id',async (req,res)=> {
   console.log(req.params.id)
