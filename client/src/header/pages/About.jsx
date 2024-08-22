@@ -70,7 +70,9 @@ const About = () => {
               <input
                 type="date"
                 name="dob"
+                placeholder="dd-mm-yy"
                 onChange={setfun}
+                style={{width:'100%'}}
               />
               <input
                 type="email"

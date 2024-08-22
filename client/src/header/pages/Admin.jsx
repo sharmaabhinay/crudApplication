@@ -10,7 +10,7 @@ const Admin = () => {
   const [data, setData] = useState([]);
   const notify = (message) => toast(message);
   const [gindicator, setGindicator] = useState(true);
-  const [Ivalue,setIvalue] = useState("");
+  const [Ivalue, setIvalue] = useState("");
   const [userData, setUserData] = useState({
     id: "",
     name: "",
@@ -19,26 +19,26 @@ const Admin = () => {
     city: "",
   });
 
-  const searchR =async ()=> {
-    let searchData = {data:Ivalue}
-    try{
+  const searchR = async (e) => {
+    e.preventDefault();
+    let searchData = { data: Ivalue };
+    try {
       let res = await axios.post(`${url}/search`, searchData);
-      setData(res.data)
-    }
-    catch(err){
+      setData(res.data);
+    } catch (err) {
       throw err;
     }
-  }
+  };
   //fetching the data first time
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${url}/users`);
+      setData(response.data);
+    } catch (error) {
+      throw error;
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${url}/users`);
-        setData(response.data);
-      } catch (error) {
-        throw error;
-      }
-    };
 
     fetchData(); // Call the fetchData function when the component mounts
   }, []);
@@ -110,20 +110,11 @@ const Admin = () => {
   const genderfilter = async (e) => {
     let genders = { gender: e.target.value };
     if (gindicator == true) {
-      try {
-        let result = await axios.post(`${url}/genders`, genders);
-        setData(result.data);
-      } catch (err) {
-        throw err;
-      }
+      data.filter((items)=> items.gender == genders.gender )
+      console.log(data.filter((items)=> items.gender == genders.gender ))
       setGindicator(false);
     } else {
-      try {
-        let result = await axios.post(url);
-        setData(result.data);
-      } catch (err) {
-        throw err;
-      }
+      fetchData()
       setGindicator(true);
     }
   };
@@ -136,24 +127,23 @@ const Admin = () => {
       } catch (err) {
         throw err;
       }
-    }else{
-      try {
-        let result = await axios.post(url);
-        setData(result.data);
-      } catch (err) {
-        throw err;
-      }
+    } else {
+      fetchData()
     }
   };
-  const handleOnD = (e)=> {
-    console.log(e)
-    console.log('span clicked', e)
-  }
+  const handleOnD = (e) => {
+    console.log(e);
+    console.log("span clicked", e);
+  };
   //this function will close the opened portal
   const closeportal = () => {
     document.querySelector(".updateForm").style.display = "none";
   };
 
+  const handleCrossClick = ()=>{
+    setIvalue("")
+    fetchData()
+  }
   return (
     <>
       <ToastContainer
@@ -212,13 +202,25 @@ const Admin = () => {
       </div>
       {/* data container/result container div */}
       <div className="dataContainer">
-        <div className="searchcontainer">        <input type="text" placeholder="name , email, city , number" onChange={(e) => setIvalue(e.target.value)}/><button onClick={searchR}>🔍</button>
-</div>
+        <form className="searchcontainer" style={{display:'flex',justifyContent:'end'}}>
+          <div className="input-cross-container" style={{display:'flex'}}>
+            <input
+              type="text"
+              value={Ivalue}
+              placeholder="name , email, city , number"
+              onChange={(e) => setIvalue(e.target.value)}
+            />
+            <div onClick={handleCrossClick} className="inputCross" style={{border:"1px 1px 1px 0px solid black",cursor:'pointer', color: Ivalue.length <=0 ? 'white':'black'}}>X</div>
+          </div>
+          <button onClick={searchR} type="submit" className="search-button">
+            search
+          </button>
+        </form>
         <div className="total">
-          <div>Total no. of data is 0{data.length}</div>
+          <div>Total : 0{data.length}</div>
         </div>
         {/* gender filter div */}
-        <div>
+        <div style={{display:'flex',alignItems:'center',gap:'.5rem'}}>
           <input
             type="checkbox"
             name="genderm"
@@ -233,7 +235,7 @@ const Admin = () => {
             onChange={genderfilter}
           />
           <label htmlFor="">female</label>
-          <select name="gradefilter" id="gradefilter" onChange={gradefilter}>
+          <select name="gradefilter" id="gradefilter" className="selection-filter" onChange={gradefilter} style={{background:'skyblue',color:'white',width:'7rem',border:'1px solid white'}}>
             <option value="all" selected>
               all
             </option>
@@ -265,9 +267,10 @@ const Admin = () => {
           </thead>
           <tbody>
             {data.map((item, i) => (
-
               <tr key={i}>
-                <td><Link to={`/user/${item._id}`}>{i + 1}</Link></td>
+                <td>
+                  <Link to={`/user/${item._id}`}>{i + 1}</Link>
+                </td>
                 {/* <td>{item._id.toString()}</td> */}
                 <td>{item.name}</td>
                 <td>{item.email}</td>
@@ -277,7 +280,13 @@ const Admin = () => {
                 <td>{item.dob}</td>
                 <td>{item.date}</td>
                 <td>{item.qualification}</td>
-                <span onClick={() => handleonClick(item._id.toString())} className="cross"> ❌</span>
+                <span
+                  onClick={() => handleonClick(item._id.toString())}
+                  className="cross"
+                >
+                  {" "}
+                  ❌
+                </span>
                 <span onClick={() => updateData(item)} className="editPen">
                   🖊️
                 </span>
@@ -286,8 +295,6 @@ const Admin = () => {
           </tbody>
         </table>
       </div>
-      
-
     </>
   );
 };
